@@ -83,7 +83,8 @@ class TrainerGroupLabel < BaseTransformer
     attr_reader :trainer_class
 
     def transform
-        format("%s\n\tdef_trainer_class %s", src, trainer_class)
+        label = @trainer_class != 'YOUNGSTER' ? src : "\tdef_trainer_class NOBODY\n#{src}"
+        format("%s\n\tdef_trainer_class %s", label, trainer_class)
     end
 end
 
