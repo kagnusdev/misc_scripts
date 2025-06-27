@@ -38,6 +38,7 @@ class TrainerGroupLabel < BaseTransformer
         'BurglarData'       => 'BURGLAR',        # $0B
         'EngineerData'      => 'ENGINEER',       # $0C
         'UnusedJugglerData' => 'UNUSED_JUGGLER', # $0D
+        'RivalF1Data'       => 'RIVAL_F1',       # $0D
         'FisherData'        => 'FISHER',         # $0E
         'SwimmerData'       => 'SWIMMER',        # $0F
         'CueBallData'       => 'CUE_BALL',       # $10
