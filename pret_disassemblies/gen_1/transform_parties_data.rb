@@ -139,6 +139,7 @@ end
 
 options = {
     dry_run: true,
+    debug: false,
 }
 
 require 'optparse'
@@ -148,6 +149,10 @@ OptionParser.new do |opts|
 
     opts.on '--rewrite', 'write transformation to file instead of displaying it' do
         options[:dry_run] = false
+    end
+
+    opts.on '--debug', 'enable binding.irb on error' do
+        options[:debug] = true
     end
 end.parse!
 
@@ -159,27 +164,38 @@ raise ArgumentError, "invalid file '#{filepath}'" unless File.exists?(filepath)
 trainer_index = 0
 
 data = File.readlines(filepath).map.with_index(1) do |line, linum|
-    line = line.chomp
-    if line.match?(/Data:\z/)
-        trainer_index = 0
-        TrainerGroupLabel.new(line)
-    elsif line.match?(/\A\tdb /)
-        party_class = line.include?('db $FF') ? SpecialParty : BasicParty
-        trainer_index += 1
-        begin
+    begin
+        line = line.chomp
+        if line.match?(/Data:\z/)
+            trainer_index = 0
+            TrainerGroupLabel.new(line)
+        elsif line.match?(/\A\tdb /)
+            party_class = line.include?('db $FF') ? SpecialParty : BasicParty
+            trainer_index += 1
             party_class.new(line, trainer_index)
-        rescue => e
-            puts format("|%3i| %s", linum, line)
-            binding.irb
+        else
+            RawLine.new(line)
         end
-    else
-        RawLine.new(line)
+    rescue => e
+        puts format("|%3i| %s", linum, line)
+        binding.irb if options[:debug]
+        raise e
+    end
+end
+
+transformed = data.map.with_index(1) do |transformer, linum|
+    begin
+        transformer.transform
+    rescue => e
+        puts format("|%3i| %s", linum, transformer.src)
+        binding.irb if options[:debug]
+        raise e
     end
 end
 
 if options[:dry_run]
-    puts data.join("\n")
+    puts transformed.join("\n")
 else
-    File.open(filepath, 'w') { |f| f.puts data.join("\n") }
+    File.open(filepath, 'w') { |f| f.puts transformed.join("\n") }
     puts "wrote macros into #{filepath}"
 end
