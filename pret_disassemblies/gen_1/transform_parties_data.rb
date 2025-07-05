@@ -126,7 +126,7 @@ end
 class SpecialParty < AbstractParty
     def initialize(source, index)
         super(source, index)
-        @level = '$FF'
+        @level = 'TRAINERTYPE_MULTI_LEVELS'
         @data = src[/\tdb +\$FF, +(.+), 0/, 1].split(', ')
     end
 
