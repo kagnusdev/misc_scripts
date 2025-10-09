@@ -158,8 +158,8 @@ end.parse!
 
 filepath = ARGV.first
 raise ArgumentError, "invalid file '#{filepath}'" if filepath.nil? || filepath.empty?
-filepath = File.expand_path(filepath) unless File.exists?(filepath)
-raise ArgumentError, "invalid file '#{filepath}'" unless File.exists?(filepath)
+filepath = File.expand_path(filepath) unless File.exist?(filepath)
+raise ArgumentError, "invalid file '#{filepath}'" unless File.exist?(filepath)
 
 trainer_index = 0
 
