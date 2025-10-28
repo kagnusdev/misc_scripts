@@ -523,7 +523,7 @@ options = {
 require 'optparse'
 
 OptionParser.new do |opts|
-    opts.banner = "Usage: #{$0} [--skip-check] [--rewrite] <path/to/pokeyellow"
+    opts.banner = "Usage: #{$0} [--skip-check] [--rewrite] <path/to/pokeyellow>"
 
     opts.on '--rewrite', 'write transformation to file instead of displaying it' do
         options[:dry_run] = false
